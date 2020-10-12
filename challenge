@@ -1,0 +1,48 @@
+index.php
+
+<?php
+require_once 'connec.php';
+$pdo = new \PDO(DSN, USER, PASS);
+
+$firstname = trim($_POST['firstname']);
+$lastname = trim($_POST['lastname']);
+
+$query = "INSERT INTO friend (firstname, lastname) VALUES (:firstname, :lastname)";
+$statement = $pdo->prepare($query);
+
+$statement->bindValue(':lastname', $lastname, \PDO::PARAM_STR);
+$statement->bindValue(':firstname', $firstname, \PDO::PARAM_STR);
+
+$statement->execute();
+
+/* Toujours mettre le SELECT après l'excécution */
+$query = "SELECT * FROM friend";
+$statement = $pdo->query($query);
+$friends = $statement->fetchAll();
+
+?>
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+</head>
+<body>
+<h1>FRIENDS</h1>
+ <?php foreach ($friends as $friend) :/* CREER une liste PHP dans un HTML */?>
+    <ul>
+        <li><?php echo $friend['lastname'] . ' ' . $friend['firstname'];?> </li>
+    </ul>
+ <?php endforeach;?>
+
+<form action="" method="post">
+    <label for = firstname>Firstname</label>
+    <input type="text" id="firstname" name="firstname" maxlength="45">
+    <label for = firstName>Lastname</label>
+    <input type="text" id="lastname" name="lastname" maxlength="45">
+    <button type="submit">Subscribe</button>
+</form>
+
+</body>
+</html>
